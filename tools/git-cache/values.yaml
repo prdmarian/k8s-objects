@@ -6,3 +6,21 @@ resources:
   limits:
     cpu: 500m
     memory: 512Mi
+# Ephemeral storage configuration
+volumeMounts:
+  - mountPath: /cache
+    name: ephemeral-storage
+volumes:
+  - name: ephemeral-storage
+    emptyDir: {}
+
+# For future use of PersistentVolumeClaim (PVC), uncomment the lines below:
+# volumes:
+#   - name: git-cache-pvc
+#     persistentVolumeClaim:
+#       claimName: git-cache-pvc
+# volumeMounts:
+#   - mountPath: /cache
+#     name: git-cache-pvc
+
+# This will be use for future func-conf and tech-conf for application like web-app
