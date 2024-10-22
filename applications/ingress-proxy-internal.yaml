@@ -1,0 +1,47 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ingress-proxy-internal
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: ingress-proxy-internal
+    server: https://kubernetes.default.svc
+  project: qualification
+  sources:
+
+  # ConfigMap și valori pentru Ingress Proxy Internal
+  - repoURL: https://gitea.ro/k8s-objects.git  # Repository-ul pentru valori și configurații
+    targetRevision: HEAD
+    path: ingress-proxy-internal
+    ref: values
+
+  # Comentat - Helm Chart personalizat pentru Ingress NGINX
+  # - repoURL: http://helm-cache.tools/custom
+  #   chart: ingress-nginx
+  #   targetRevision: 4.9.1
+  #   helm:
+  #     releaseName: ingress-nginx
+  #     valueFiles:
+  #     - $values/ingress-proxy-internal/ingress-nginx/values.yaml
+  #     - $values/ingress-proxy-internal/ingress-nginx/config.yaml
+
+  # Comentat - Helm Chart de la Bitnami pentru Ingress NGINX
+  # - repoURL: https://charts.bitnami.com/bitnami
+  #   chart: ingress-nginx
+  #   targetRevision: latest
+  #   helm:
+  #     releaseName: ingress-nginx
+  #     valueFiles:
+  #     - $values/ingress-proxy-internal/ingress-nginx/values.yaml
+  #     - $values/ingress-proxy-internal/ingress-nginx/config.yaml
+
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - PruneLast=true
+      - CreateNamespace=true

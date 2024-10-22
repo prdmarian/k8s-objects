@@ -1,0 +1,61 @@
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelector: {}
+    podMonitorSelector: {}
+    resources:
+      limits:
+        cpu: 1
+        memory: 2Gi
+    serviceMonitorNamespaceSelector: {}
+    podMonitorNamespaceSelector: {}
+    # Configurare pentru ephemeral storage (nu se vor salva date pe termen lung)
+    storageSpec:
+      emptyDir: {}  # Folosește stocare temporară (ephemeral)
+    # Monitorizarea resurselor Kubernetes
+    additionalScrapeConfigs:
+      - job_name: 'kubernetes-nodes'
+        kubernetes_sd_configs:
+        - role: node
+        relabel_configs:
+        - action: labelmap
+          regex: __meta_kubernetes_node_label_(.+)
+        - target_label: __address__
+          replacement: kubernetes.default.svc:443
+        - source_labels: [__meta_kubernetes_node_name]
+          target_label: instance
+
+      - job_name: 'kubernetes-pods'
+        kubernetes_sd_configs:
+        - role: pod
+
+      - job_name: 'kubernetes-cadvisor'
+        kubernetes_sd_configs:
+        - role: node
+        scheme: https
+        tls_config:
+          insecure_skip_verify: true
+        relabel_configs:
+        - action: labelmap
+          regex: __meta_kubernetes_node_label_(.+)
+
+      - job_name: 'kubernetes-apiservers'
+        kubernetes_sd_configs:
+        - role: endpoints
+          namespaces:
+            names:
+              - kube-system
+        scheme: https
+        tls_config:
+          insecure_skip_verify: true
+        relabel_configs:
+        - action: labelmap
+          regex: __meta_kubernetes_service_label_(.+)
+
+# Comentariile pentru Persistent Volume pe viitor:
+# storageSpec:
+#   volumeClaimTemplate:
+#     spec:
+#       accessModes: ["ReadWriteOnce"]
+#       resources:
+#         requests:
+#           storage: 10Gi  # Se poate modifica după necesitate

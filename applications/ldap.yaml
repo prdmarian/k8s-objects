@@ -1,0 +1,47 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tools
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: tools
+    server: https://kubernetes.default.svc
+  project: qualification
+  sources:
+
+  # ConfigMap și valori pentru LDAP
+  - repoURL: https://gitea.ro/k8s-objects.git  # Repository-ul pentru valorile și configurațiile LDAP
+    targetRevision: HEAD
+    path: tools/ldap  # Acest path conține fișierele config.yaml și alte valori necesare
+    ref: values
+
+  # Comentat - Helm Chart personalizat pentru LDAP (în caz că folosești un chart custom)
+  # - repoURL: http://helm-cache.tools/custom  # Repo-ul pentru Helm Chart custom
+  #   chart: ldap
+  #   targetRevision: 2.4.6  # Versiunea Helm Chart-ului
+  #   helm:
+  #     releaseName: ldap
+  #     valueFiles:
+  #     - $values/tools/ldap/values.yaml
+  #     - $values/tools/ldap/config.yaml
+
+  # Comentat - Helm Chart de la Bitnami (în caz că folosești un chart extern Bitnami)
+  # - repoURL: https://charts.bitnami.com/bitnami  # Repo-ul Bitnami
+  #   chart: openldap
+  #   targetRevision: latest  # Ultima versiune
+  #   helm:
+  #     releaseName: ldap
+  #     valueFiles:
+  #     - $values/tools/ldap/values.yaml
+  #     - $values/tools/ldap/config.yaml
+
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - PruneLast=true
+      - CreateNamespace=true

@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prometheus
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: monitoring
+    server: https://kubernetes.default.svc
+  project: qualification
+  sources:
+
+  # ConfigMap și valori pentru Prometheus
+  - repoURL: https://gitea.ro/k8s-objects.git  # Repository-ul pentru valori și configurații
+    targetRevision: HEAD
+    path: monitoring/prometheus
+    ref: values
+
+  # Comentat - Helm Chart personalizat pentru Prometheus
+  # - repoURL: http://helm-cache.tools/custom
+  #   chart: prometheus
+  #   targetRevision: 14.5.0
+  #   helm:
+  #     releaseName: prometheus
+  #     valueFiles:
+  #     - $values/monitoring/prometheus/values.yaml
+
+  # Comentat - Helm Chart Bitnami pentru Prometheus
+  # - repoURL: https://charts.bitnami.com/bitnami
+  #   chart: prometheus
+  #   targetRevision: latest
+  #   helm:
+  #     releaseName: prometheus
+  #     valueFiles:
+  #     - $values/monitoring/prometheus/values.yaml
+
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - PruneLast=true
+      - CreateNamespace=true

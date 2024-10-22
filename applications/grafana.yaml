@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: grafana
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: monitoring
+    server: https://kubernetes.default.svc
+  project: qualification
+  sources:
+
+  # ConfigMap și valori pentru Grafana
+  - repoURL: https://gitea.ro/k8s-objects.git  # Repository-ul pentru valori și configurații
+    targetRevision: HEAD
+    path: monitoring/grafana
+    ref: values
+
+  # Comentat - Helm Chart personalizat pentru Grafana
+  # - repoURL: http://helm-cache.tools/custom
+  #   chart: grafana
+  #   targetRevision: 7.5.1
+  #   helm:
+  #     releaseName: grafana
+  #     valueFiles:
+  #     - $values/monitoring/grafana/values.yaml
+
+  # Comentat - Helm Chart Bitnami pentru Grafana
+  # - repoURL: https://charts.bitnami.com/bitnami
+  #   chart: grafana
+  #   targetRevision: latest
+  #   helm:
+  #     releaseName: grafana
+  #     valueFiles:
+  #     - $values/monitoring/grafana/values.yaml
+
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - PruneLast=true
+      - CreateNamespace=true

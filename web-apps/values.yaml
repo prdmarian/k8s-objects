@@ -1,0 +1,15 @@
+replicaCount: 1
+image:
+  repository: custom/web-app
+  tag: latest
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+ingress:
+  enabled: true
+  hosts:
+    - host: webapp.elgg.ro
+      paths:
+        - path: /
+          pathType: Prefix

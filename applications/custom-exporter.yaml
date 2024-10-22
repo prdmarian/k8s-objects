@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: custom-exporter
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: monitoring
+    server: https://kubernetes.default.svc
+  project: qualification
+  sources:
+
+  # ConfigMap și valori pentru Custom Exporter
+  - repoURL: https://gitea.ro/k8s-objects.git  # Repository-ul pentru valori și configurații
+    targetRevision: HEAD
+    path: monitoring/custom-exporter
+    ref: values
+
+  # Comentat - Helm Chart personalizat pentru Custom Exporter
+  # - repoURL: http://helm-cache.tools/custom
+  #   chart: custom-exporter
+  #   targetRevision: 1.0.0
+  #   helm:
+  #     releaseName: custom-exporter
+  #     valueFiles:
+  #     - $values/monitoring/custom-exporter/values.yaml
+
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - PruneLast=true
+      - CreateNamespace=true

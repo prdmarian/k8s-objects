@@ -1,0 +1,56 @@
+ldap:
+  image:
+    repository: bitnami/openldap
+    tag: latest
+
+  replicas: 1
+
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "500m"
+      ephemeral-storage: "1Gi"
+    limits:
+      memory: "1Gi"
+      cpu: "1"
+      ephemeral-storage: "2Gi"
+
+  volumes:
+    - name: ldap-config
+      configMap:
+        name: ldap-config
+    - name: ldap-users
+      configMap:
+        name: ldap-users
+
+  storage:
+    ephemeral: true
+
+  service:
+    ports:
+      - name: ldap
+        port: 1389
+        targetPort: 1389
+        protocol: TCP
+      - name: ldaps
+        port: 1636
+        targetPort: 1636
+        protocol: TCP
+  tls:
+    - secretName: internal-tls  # Certificat SSL pentru LDAP
+
+  secrets:
+    adminUser: dGFjdGl4  # tactix (Base64 encoded)
+    adminPassword: dGVzdDEyMwo=  # test123 (Base64 encoded)
+    readOnlyUser: dGVzdA==  # test (Base64 encoded)
+    readOnlyPassword: dGVzdDEyMzQK  # test1234 (Base64 encoded)
+
+ldapService:
+  type: ClusterIP
+  ports:
+    - name: ldap
+      port: 1389
+      targetPort: 1389
+    - name: ldaps
+      port: 1636
+      targetPort: 1636

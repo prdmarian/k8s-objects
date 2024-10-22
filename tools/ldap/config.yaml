@@ -1,0 +1,38 @@
+# ConfigMap pentru configurarea LDAP și utilizatorii LDIF
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ldap-users
+  namespace: tools
+data:
+  users.ldif: |
+    dn: dc=elgg,dc=ro
+    objectClass: top
+    objectClass: dcObject
+    objectClass: organization
+    o: ELGG Organization
+    dc: elgg
+
+    dn: ou=users,dc=elgg,dc=ro
+    objectClass: organizationalUnit
+    ou: users
+
+    # Admin user (tactix)
+    dn: cn=tactix,ou=users,dc=elgg,dc=ro
+    objectClass: simpleSecurityObject
+    objectClass: organizationalRole
+    cn: tactix
+    description: Administrator
+
+    # Read-only user (test)
+    dn: cn=test,ou=users,dc=elgg,dc=ro
+    objectClass: simpleSecurityObject
+    objectClass: organizationalRole
+    cn: test
+    description: Read-only user
+
+    # Add Access Control Policy
+    dn: olcDatabase={1}mdb,cn=config
+    changetype: modify
+    add: olcAccess
+    olcAccess: to dn.base="dc=elgg,dc=ro" by dn.base="cn=tactix,ou=users,dc=elgg,dc=ro" write by dn.base="cn=test,ou=users,dc=elgg,dc=ro" read by * none

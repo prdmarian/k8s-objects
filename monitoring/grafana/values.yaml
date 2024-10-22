@@ -1,0 +1,39 @@
+grafana:
+  # Configurarea sursei de date Prometheus
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+      - name: Prometheus
+        type: prometheus
+        access: proxy
+        url: http://prometheus-server.monitoring.svc.cluster.local  # URL-ul unde rulează Prometheus
+        isDefault: true
+        editable: true
+
+  # Configurarea dashboard-urilor predefinite
+  dashboards:
+    default:
+      kubernetes-cluster:
+        gnetId: 6417  # Dashboard pentru monitorizarea Kubernetes
+        datasource: Prometheus
+        url: https://grafana.com/api/dashboards/6417/revisions/3/download
+        folder: Kubernetes
+      node-exporter:
+        gnetId: 1860  # Dashboard pentru metricile nodurilor Kubernetes
+        datasource: Prometheus
+        url: https://grafana.com/api/dashboards/1860/revisions/1/download
+        folder: Kubernetes
+
+  # Alte setări Grafana
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  ingress:
+    enabled: true
+    hosts:
+      - host: grafana.internal.elgg.ro
+        paths:
+          - path: /
+            pathType: Prefix

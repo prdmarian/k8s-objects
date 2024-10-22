@@ -1,0 +1,43 @@
+replicaCount: 1
+image:
+  repository: argoproj/argocd
+  tag: v2.3.0
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+ingress:
+  enabled: true
+  hosts:
+    - host: argocd.internal.elgg.ro
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: internal-tls  # Certificat SSL pentru ArgoCD
+
+# Configurare LDAP pentru autentificare
+configs:
+  dex:
+    connectors:
+      - type: ldap
+        id: ldap
+        name: LDAP
+        config:
+          host: ldap-service.tools.svc.cluster.local:1389
+          insecureNoSSL: true
+          bindDN: "cn=tactix,ou=users,dc=elgg,dc=ro"
+          bindPW: $LDAP_ADMIN_PASSWORD
+          userSearch:
+            baseDN: "ou=users,dc=elgg,dc=ro"
+            filter: "(objectClass=person)"
+            username: "cn"
+            idAttr: "uid"
+            emailAttr: "mail"
+          groupSearch:
+            baseDN: "ou=groups,dc=elgg,dc=ro"
+            filter: "(objectClass=group)"
+            userAttr: "uid"
+            groupAttr: "cn"
+            nameAttr: "cn"

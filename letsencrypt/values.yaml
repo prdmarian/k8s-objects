@@ -1,0 +1,49 @@
+replicaCount: 1
+image:
+  repository: quay.io/jetstack/cert-manager-controller
+  tag: v1.5.3
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+
+# Configurare pentru Cert-Manager pentru a emite certificate SSL
+issuer:
+  name: letsencrypt-prod
+  type: ClusterIssuer
+  email: admin@elgg.ro
+  server: https://acme-v02.api.letsencrypt.org/directory
+  privateKeySecretRef:
+    name: letsencrypt-prod
+  solvers:
+    - http01:
+        ingress:
+          class: nginx
+
+certificates:
+  # Certificate pentru aplicațiile externe (web-apps)
+  - name: webapp-cert
+    commonName: webapp.elgg.ro
+    dnsNames:
+      - webapp.elgg.ro
+    secretName: webapp-tls
+    issuerRef:
+      name: letsencrypt-prod
+      kind: ClusterIssuer
+    dns01:
+      provider: cloudflare
+
+  # Certificate pentru aplicațiile interne (grafana, prometheus, ldap, argocd)
+  - name: internal-cert
+    commonName: grafana.internal.elgg.ro
+    dnsNames:
+      - grafana.internal.elgg.ro
+      - prometheus.internal.elgg.ro
+      - ldap.internal.elgg.ro
+      - argocd.internal.elgg.ro
+    secretName: internal-tls
+    issuerRef:
+      name: letsencrypt-prod
+      kind: ClusterIssuer
+    dns01:
+      provider: cloudflare

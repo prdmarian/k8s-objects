@@ -1,0 +1,16 @@
+controller:
+  image:
+    repository: nginx/nginx-ingress
+    tag: latest
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+ingress:
+  enabled: true
+  hosts:
+    - host: webapp.elgg.ro
+  tls:
+    - secretName: webapp-tls  # Secret pentru certificatul SSL emis de Let's Encrypt
+      hosts:
+        - webapp.elgg.ro

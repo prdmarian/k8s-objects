@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: helm-cache
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: tools
+    server: https://kubernetes.default.svc
+  project: qualification
+  sources:
+
+  # ConfigMap și valori pentru Helm Cache
+  - repoURL: https://gitea.ro/k8s-objects.git  # Repository-ul pentru valori și configurații
+    targetRevision: HEAD
+    path: tools/helm-cache
+    ref: values
+
+  # Comentat - Helm Chart personalizat pentru Helm Cache
+  # - repoURL: http://helm-cache.tools/custom
+  #   chart: helm-cache
+  #   targetRevision: 1.0.0
+  #   helm:
+  #     releaseName: helm-cache
+  #     valueFiles:
+  #     - $values/tools/helm-cache/values.yaml
+
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - PruneLast=true
+      - CreateNamespace=true
