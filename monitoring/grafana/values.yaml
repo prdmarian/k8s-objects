@@ -1,4 +1,43 @@
+replicaCount: 1
+image:
+  repository: grafana/grafana
+  tag: 8.2.0
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+ingress:
+  enabled: true
+  hosts:
+    - host: grafana.internal.elgg.ro
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: internal-tls  # Certificat SSL pentru Grafana
+
+# Configurare LDAP pentru autentificare
 grafana:
+  ldap:
+    enabled: true
+    config:
+      servers:
+        - host: ldap-service.tools.svc.cluster.local
+          port: 1389
+          use_ssl: false
+          bind_dn: "cn=tactix,ou=users,dc=elgg,dc=ro"
+          bind_password: $LDAP_ADMIN_PASSWORD
+          search_base_dns:
+            - "ou=users,dc=elgg,dc=ro"
+          search_filter: "(uid=%s)"
+          group_search_base_dns:
+            - "ou=groups,dc=elgg,dc=ro"
+          group_search_filter: "(objectClass=posixGroup)"
+          group_search_user_attribute: "memberUid"
+          group_search_group_attribute: "cn"
+          group_search_group_map_attribute: "cn"
+
   # Configurarea sursei de date Prometheus
   datasources:
     datasources.yaml:
@@ -24,16 +63,3 @@ grafana:
         datasource: Prometheus
         url: https://grafana.com/api/dashboards/1860/revisions/1/download
         folder: Kubernetes
-
-  # Alte setări Grafana
-  resources:
-    limits:
-      cpu: 500m
-      memory: 512Mi
-  ingress:
-    enabled: true
-    hosts:
-      - host: grafana.internal.elgg.ro
-        paths:
-          - path: /
-            pathType: Prefix
