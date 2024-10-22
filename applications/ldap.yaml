@@ -13,7 +13,7 @@ spec:
   sources:
 
   # ConfigMap și valori pentru LDAP
-  - repoURL: https://gitea.ro/k8s-objects.git  # Repository-ul pentru valorile și configurațiile LDAP
+  - repoURL: https://github.com/prdmarian/k8s-objects.git  # Repository-ul pentru valorile și configurațiile LDAP
     targetRevision: HEAD
     path: tools/ldap  # Acest path conține fișierele config.yaml și alte valori necesare
     ref: values
