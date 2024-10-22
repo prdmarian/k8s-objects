@@ -13,7 +13,7 @@ spec:
   sources:
 
   # ConfigMap și valori pentru Custom Exporter
-  - repoURL: https://gitea.ro/k8s-objects.git  # Repository-ul pentru valori și configurații
+  - repoURL: https://github.com/prdmarian/k8s-objects.git  # Repository-ul pentru valori și configurații
     targetRevision: HEAD
     path: monitoring/custom-exporter
     ref: values
