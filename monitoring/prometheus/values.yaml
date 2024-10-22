@@ -1,3 +1,14 @@
+replicaCount: 1
+
+image:
+  repository: prom/prometheus
+  tag: v2.29.0
+
+resources:
+  limits:
+    cpu: 1
+    memory: 2Gi  # Am unificat resursele la 2Gi pentru consistență
+
 prometheus:
   prometheusSpec:
     serviceMonitorSelector: {}
@@ -5,12 +16,13 @@ prometheus:
     resources:
       limits:
         cpu: 1
-        memory: 2Gi
+        memory: 2Gi  # Aceleași resurse alocate pentru procesul Prometheus
     serviceMonitorNamespaceSelector: {}
     podMonitorNamespaceSelector: {}
     # Configurare pentru ephemeral storage (nu se vor salva date pe termen lung)
     storageSpec:
       emptyDir: {}  # Folosește stocare temporară (ephemeral)
+    
     # Monitorizarea resurselor Kubernetes
     additionalScrapeConfigs:
       - job_name: 'kubernetes-nodes'
@@ -50,6 +62,14 @@ prometheus:
         relabel_configs:
         - action: labelmap
           regex: __meta_kubernetes_service_label_(.+)
+
+ingress:
+  enabled: true
+  hosts:
+    - host: prometheus.internal.elgg.ro
+      paths:
+        - path: /
+          pathType: Prefix
 
 # Comentariile pentru Persistent Volume pe viitor:
 # storageSpec:
