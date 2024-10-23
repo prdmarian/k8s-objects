@@ -1,11 +1,21 @@
 replicaCount: 1
+
 image:
   repository: argoproj/argocd
   tag: v2.3.0
+
 resources:
   limits:
     cpu: 500m
     memory: 512Mi
+
+# Stocare ephemeral pentru toate componentele ArgoCD
+volumeMounts:
+  - name: ephemeral-storage
+    mountPath: /data
+volumes:
+  - name: ephemeral-storage
+    emptyDir: {}
 
 ingress:
   enabled: true

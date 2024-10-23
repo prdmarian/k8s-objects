@@ -9,7 +9,7 @@ spec:
   destination:
     namespace: monitoring
     server: https://kubernetes.default.svc
-  project: qualification
+  project: default
   sources:
 
   # ConfigMap și valori pentru Grafana

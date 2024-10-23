@@ -1,22 +1,16 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: letsencrypt
+  name: cert-manager
   namespace: argocd
   finalizers:
   - resources-finalizer.argocd.argoproj.io
 spec:
   destination:
-    namespace: letsencrypt
+    namespace: cert-manager
     server: https://kubernetes.default.svc
-  project: qualification
+  project: default
   sources:
-
-  # ConfigMap și valori pentru Let's Encrypt
-  - repoURL: https://github.com/prdmarian/k8s-objects.git  # Repository-ul pentru valori și configurații
-    targetRevision: HEAD
-    path: letsencrypt
-    ref: values
 
   # Comentat - Helm Chart personalizat pentru Let's Encrypt
   # - repoURL: http://helm-cache.tools/custom
@@ -28,13 +22,19 @@ spec:
   #     - $values/letsencrypt/values.yaml
 
   # Comentat - Helm Chart Bitnami pentru cert-manager
-  # - repoURL: https://charts.bitnami.com/bitnami
-  #   chart: cert-manager
-  #   targetRevision: latest
-  #   helm:
-  #     releaseName: cert-manager
-  #     valueFiles:
-  #     - $values/letsencrypt/values.yaml
+  - repoURL: https://charts.bitnami.com/bitnami
+    chart: cert-manager
+    targetRevision: latest
+    helm:
+     releaseName: cert-manager
+     valueFiles:
+     - $values/cert-manager/values.yaml
+
+  # ConfigMap și valori pentru Let's Encrypt
+  - repoURL: https://github.com/prdmarian/k8s-objects.git  # Repository-ul pentru valori și configurații
+    targetRevision: HEAD
+    path: cert-manager
+    ref: values
 
   syncPolicy:
     automated:

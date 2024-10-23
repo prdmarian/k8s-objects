@@ -6,8 +6,23 @@ image:
 
 resources:
   limits:
-    cpu: 200m
+    cpu: 300m
     memory: 256Mi
+  requests:
+    cpu: 200m
+    memory: 192Mi
+
+readinessProbe:
+  exec:
+    command:
+      - pgrep
+      - cainjector
+  initialDelaySeconds: 10  # Poți mări această valoare
+  timeoutSeconds: 5        # Timeout-ul pentru rularea comenzii
+  periodSeconds: 10        # Intervalul la care se va verifica disponibilitatea containerului
+  successThreshold: 1
+  failureThreshold: 5      # Numărul de eșecuri acceptate înainte de a considera containerul nereușit
+
 
 # Configurare pentru Cert-Manager pentru a emite certificate SSL
 issuer:

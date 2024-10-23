@@ -9,7 +9,7 @@ spec:
   destination:
     namespace: ingress-proxy-internal
     server: https://kubernetes.default.svc
-  project: qualification
+  project: default
   sources:
 
   # ConfigMap și valori pentru Ingress Proxy Internal
