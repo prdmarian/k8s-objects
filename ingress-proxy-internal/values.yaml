@@ -2,21 +2,23 @@ controller:
   image:
     repository: nginx/nginx-ingress
     tag: latest
-resources:
-  limits:
-    cpu: 200m
-    memory: 256Mi
-ingress:
-  enabled: true
-  hosts:
-    - host: grafana.internal.elgg.ro
-    - host: prometheus.internal.elgg.ro
-    - host: ldap.internal.elgg.ro
-    - host: argocd.internal.elgg.ro
-  tls:
-    - secretName: internal-tls  # Secret pentru certificatul SSL emis de Let's Encrypt
-      hosts:
-        - grafana.internal.elgg.ro
-        - prometheus.internal.elgg.ro
-        - ldap.internal.elgg.ro
-        - argocd.internal.elgg.ro
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+  ingress:
+    enabled: true
+    hosts:
+      - host: grafana.internal.elgg.ro
+      - host: prometheus.internal.elgg.ro
+      - host: ldap.internal.elgg.ro
+      - host: argocd.internal.elgg.ro
+      - host: custom-exporter.internal.elgg.ro  # Adăugat custom-exporter la ingress-ul intern
+    tls:
+      - secretName: internal-tls  # Secret pentru certificatul SSL emis de Let's Encrypt
+        hosts:
+          - grafana.internal.elgg.ro
+          - prometheus.internal.elgg.ro
+          - ldap.internal.elgg.ro
+          - argocd.internal.elgg.ro
+          - custom-exporter.internal.elgg.ro  # Adăugat și pentru TLS

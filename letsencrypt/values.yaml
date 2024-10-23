@@ -1,7 +1,9 @@
 replicaCount: 1
+
 image:
   repository: quay.io/jetstack/cert-manager-controller
   tag: v1.5.3
+
 resources:
   limits:
     cpu: 200m
@@ -33,7 +35,7 @@ certificates:
     dns01:
       provider: cloudflare
 
-  # Certificate pentru aplicațiile interne (grafana, prometheus, ldap, argocd)
+  # Certificate pentru aplicațiile interne (grafana, prometheus, ldap, argocd, custom-exporter)
   - name: internal-cert
     commonName: grafana.internal.elgg.ro
     dnsNames:
@@ -41,6 +43,7 @@ certificates:
       - prometheus.internal.elgg.ro
       - ldap.internal.elgg.ro
       - argocd.internal.elgg.ro
+      - custom-exporter.internal.elgg.ro  # Adăugat custom-exporter
     secretName: internal-tls
     issuerRef:
       name: letsencrypt-prod
