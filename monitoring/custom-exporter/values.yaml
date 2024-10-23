@@ -1,0 +1,59 @@
+replicaCount: 1
+
+image:
+  repository: custom/custom-exporter
+  tag: latest
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+service:
+  type: ClusterIP
+  port: 9100
+  targetPort: 9100
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: "/metrics"
+    prometheus.io/port: "9100"
+
+# Configurație pentru Prometheus ServiceMonitor
+serviceMonitor:
+  enabled: true
+  namespace: monitoring  # Asigură-te că este namespace-ul folosit pentru Prometheus
+  interval: 30s
+  scrapeTimeout: 10s
+  selector:
+    matchLabels:
+      app: custom-exporter
+  endpoints:
+    - port: metrics
+      interval: 30s
+      path: /metrics
+      scrapeTimeout: 10s
+      honorLabels: true
+
+ingress:
+  enabled: true
+  hosts:
+    - host: custom-exporter.internal.elgg.ro
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: internal-tls  # Secret pentru certificatul SSL emis de Let's Encrypt
+      hosts:
+        - custom-exporter.internal.elgg.ro
+
+# Optional: Configurația de security pentru TLS dacă este necesar
+tls:
+  enabled: false
+
+# Persistent storage poate fi adăugat aici în viitor, dar este lăsat comentat pentru acum
+# storage:
+#   accessModes:
+#     - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 5Gi
