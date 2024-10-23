@@ -26,12 +26,12 @@ readinessProbe:
 
 # Configurare pentru Cert-Manager pentru a emite certificate SSL
 issuer:
-  name: letsencrypt-prod
+  name: letsencrypt
   type: ClusterIssuer
   email: admin@elgg.ro
   server: https://acme-v02.api.letsencrypt.org/directory
   privateKeySecretRef:
-    name: letsencrypt-prod
+    name: letsencrypt
   solvers:
     - http01:
         ingress:
@@ -45,7 +45,7 @@ certificates:
       - webapp.elgg.ro
     secretName: webapp-tls
     issuerRef:
-      name: letsencrypt-prod
+      name: letsencrypt
       kind: ClusterIssuer
     dns01:
       provider: cloudflare
@@ -61,7 +61,7 @@ certificates:
       - custom-exporter.internal.elgg.ro  # Adăugat custom-exporter
     secretName: internal-tls
     issuerRef:
-      name: letsencrypt-prod
+      name: letsencrypt
       kind: ClusterIssuer
     dns01:
       provider: cloudflare
