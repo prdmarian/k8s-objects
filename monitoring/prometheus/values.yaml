@@ -1,8 +1,8 @@
 replicaCount: 1
 
 image:
-  repository: prom/prometheus
-  tag: v2.29.0
+  repository: bitnami/prometheus
+  tag: 2.55.1
 
 resources:
   limits:

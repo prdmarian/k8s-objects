@@ -1,8 +1,10 @@
-replicaCount: 1
 
 image:
   repository: argoproj/argocd
-  tag: v2.3.0
+  tag: v2.2.5
+
+replicaCount: 1
+
 
 resources:
   limits:
@@ -51,3 +53,4 @@ configs:
             userAttr: "uid"
             groupAttr: "cn"
             nameAttr: "cn"
+
