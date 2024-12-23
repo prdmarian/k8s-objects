@@ -15,7 +15,7 @@ spec:
   # ConfigMap și valori pentru Prometheus
   - repoURL: https://github.com/prdmarian/k8s-objects.git  # Repository-ul pentru valori și configurații
     targetRevision: HEAD
- #   path: monitoring/prometheus
+    #    path: monitoring/prometheus
     ref: values
 
   # Comentat - Helm Chart personalizat pentru Prometheus
@@ -28,13 +28,13 @@ spec:
   #     - $values/monitoring/prometheus/values.yaml
 
   # Comentat - Helm Chart Bitnami pentru Prometheus
-   - repoURL: https://charts.bitnami.com/bitnami
-     chart: prometheus
-     targetRevision: 1.3.28
-     helm:
-       releaseName: prometheus
-       valueFiles:
-         - $values/monitoring/prometheus/values.yaml
+  - repoURL: https://charts.bitnami.com/bitnami
+    chart: prometheus
+    targetRevision: 1.3.28
+    helm:
+      releaseName: prometheus
+      valueFiles:
+        - $values/monitoring/prometheus/values.yaml
 
   syncPolicy:
     automated:
